@@ -18,7 +18,7 @@ def resource_path(relative_path):
 windowWidth = 300
 windowHeight = 300
 
-cookieCount = 72
+cookieCount = 0
 upgrade = ""
 increment = 200
 
