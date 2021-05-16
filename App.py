@@ -375,7 +375,7 @@ app.after(grannySpeed, granny)
 app.after(1, updateCookieCountLabel)
 app.after(1, checkSong)
 
-# App default shit
+# App default stuff
 
 app.wm_title("Cookie Clicker")
 app.geometry(f"{windowWidth}x{windowHeight}")
