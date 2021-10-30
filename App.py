@@ -405,7 +405,7 @@ canvas.tag_bind(startGameLabel, "<Button-1>", playGame)
 
 quitGameLabelStroke = canvas.create_text((windowWidth / 2 + 2, windowHeight / 2 + 25 + 2), text="Quit Game", font=('Kavoon', 24), fill="black", justify=CENTER)
 quitGameLabel = canvas.create_text((windowWidth / 2, windowHeight / 2 + 25), text="Quit Game", font=('Kavoon', 24), fill="white", justify=CENTER)
-canvas.tag_bind(quitGameLabel, "<Button-1>", quitApp)
+canvas.tag_bind(quitGameLabel, "<Button-1>", quitApp2)
 
 cookieImageMainMenu = canvas.create_image((windowWidth - windowHeight + 25, windowHeight - 25), image=cookie)
 cookieImage2MainMenu = canvas.create_image((windowWidth - 15, windowHeight + 15), image=cookie)
