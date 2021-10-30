@@ -3,9 +3,29 @@ import tkinter as tk
 import os
 import pygame
 import pyglet
+import json
+import sys
 from tkinter.ttk import *
 from tkinter import *
 from PIL import Image, ImageTk
+
+if not os.path.isdir("data/"):
+  os.makedirs("data")
+
+if not os.path.isfile("data/data.json"):
+  open("data/data.json", "w").write(r"{}")
+  data = json.load(open("data/data.json"))
+  data["cookies"] = 0
+  data["grannyprice"] = 100
+  data["grannylevel"] = 0
+  data["maxgrannylevel"] = 1000
+  data["grannyenabled"] = False
+  data["grannycookies"] = 1
+  data["grannyspeed"] = 1000
+  data["songplaying"] = True
+  data["sfxplaying"] = True
+  data["playedbefore"] = False
+  json.dump(data, open("data/data.json", "w"))
 
 def resource_path(relative_path):
   try:
@@ -15,31 +35,48 @@ def resource_path(relative_path):
 
   return os.path.join(base_path, relative_path)
 
+data = json.load(open("data/data.json"))
 windowWidth = 300
 windowHeight = 300
 
-cookieCount = 0
+cookieCount = data["cookies"]
 upgrade = ""
 increment = 200
 
-grannyPrice = 100
-grannyLevel = 0
-maxGrannyLevel = 1000
-grannyEnabled = False
-grannySpeed = 1000
-grannyCookies = 1
+grannyPrice = data["grannyprice"]
+grannyLevel = data["grannylevel"]
+maxGrannyLevel = data["maxgrannylevel"]
+grannyEnabled = data["grannyenabled"]
+grannySpeed = data["grannyspeed"]
+grannyCookies = data["grannycookies"]
 
 # animatedLabelY = 350
 # animatedLabelX = 120
 
 song = resource_path("music/song.mp3")
 songVolume = 0.75
-songPlaying = True
+songPlaying = data["songplaying"]
 
-sfxPlaying = True
+sfxPlaying = data["sfxplaying"]
 
-def quitApp(event):
+def quitApp():
+  data2 = json.load(open("data/data.json"))
+  data2["cookies"] = cookieCount
+  data2["grannyprice"] = grannyPrice
+  data2["grannylevel"] = grannyLevel
+  data2["maxgrannylevel"] = maxGrannyLevel
+  data2["grannyenabled"] = grannyEnabled
+  data2["grannycookies"] = grannyCookies
+  data2["grannyspeed"] = grannySpeed
+  data2["songplaying"] = songPlaying
+  data2["sfxplaying"] = sfxPlaying
+  data2["playedbefore"] = True
+  json.dump(data2, open("data/data.json", "w"))
   app.destroy()
+  quit()
+
+def quitApp2(e):
+  quitApp()
 
 def checkSong():
   if songPlaying is True:
@@ -340,7 +377,7 @@ canvas.tag_bind(menuText2, "<Button-1>", muteSfx)
 
 menuText3Stroke = canvas.create_text((windowWidth / 2 + 2, 500 + 2), text="Quit Game", font="Kavoon 20", fill="#000000", justify=CENTER)
 menuText3 = canvas.create_text((windowWidth / 2, 500), text="Quit Game", font="Kavoon 20", fill="#ffffff", justify=CENTER)
-canvas.tag_bind(menuText3, "<Button-1>", quitApp)
+canvas.tag_bind(menuText3, "<Button-1>", quitApp2)
 
 closeMenuBtn = canvas.create_image(windowWidth + -20, 500, image=closeImage)
 canvas.tag_bind(closeMenuBtn, "<Button-1>", closeMenu)
@@ -358,8 +395,12 @@ titleBG = canvas.create_rectangle(windowHeight, 25, 0, windowWidth / 4, outline=
 titleLabelStroke = canvas.create_text((windowWidth / 2 + 2, 50 + 2), text="Cookie Clicker", font=('Kavoon', 24), fill="black", justify=CENTER)
 titleLabel = canvas.create_text((windowWidth / 2, 50), text="Cookie Clicker", font=('Kavoon', 24), fill="white", justify=CENTER)
 
-startGameLabelStroke = canvas.create_text((windowWidth / 2 + 2, windowHeight / 2 - 25 + 2), text="Start Game", font=('Kavoon', 24), fill="black", justify=CENTER)
-startGameLabel = canvas.create_text((windowWidth / 2, windowHeight / 2 - 25), text="Start Game", font=('Kavoon', 24), fill="white", justify=CENTER)
+if not json.load(open("data/data.json"))["playedbefore"]:
+  startGameLabelStroke = canvas.create_text((windowWidth / 2 + 2, windowHeight / 2 - 25 + 2), text="Start Game", font=('Kavoon', 24), fill="black", justify=CENTER)
+  startGameLabel = canvas.create_text((windowWidth / 2, windowHeight / 2 - 25), text="Start Game", font=('Kavoon', 24), fill="white", justify=CENTER)
+else:
+  startGameLabelStroke = canvas.create_text((windowWidth / 2 + 2, windowHeight / 2 - 25 + 2), text="Resume Game", font=('Kavoon', 24), fill="black", justify=CENTER)
+  startGameLabel = canvas.create_text((windowWidth / 2, windowHeight / 2 - 25), text="Resume Game", font=('Kavoon', 24), fill="white", justify=CENTER)
 canvas.tag_bind(startGameLabel, "<Button-1>", playGame)
 
 quitGameLabelStroke = canvas.create_text((windowWidth / 2 + 2, windowHeight / 2 + 25 + 2), text="Quit Game", font=('Kavoon', 24), fill="black", justify=CENTER)
@@ -377,6 +418,7 @@ app.after(1, checkSong)
 
 # App default stuff
 
+app.protocol("WM_DELETE_WINDOW", quitApp)
 app.wm_title("Cookie Clicker")
 app.geometry(f"{windowWidth}x{windowHeight}")
 app.resizable(False, False)
